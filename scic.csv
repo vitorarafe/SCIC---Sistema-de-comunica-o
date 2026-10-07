@@ -1,0 +1,8 @@
+modulo,latencia_observada,latencia_prevista,status
+Habitacao,45.2,45.0,ativo
+Laboratorio,120.5,115.0,ativo
+Comando,12.1,12.100000000000001,ativo
+Agricultura,85.0,90.0,alerta
+Comunicacao,300.0,280.0,alerta
+Suporte Medico,90.0,95.0,ativo
+Armazenamento,180.0,170.0,manutencao
