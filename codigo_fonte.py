@@ -1,31 +1,42 @@
-import pandas as pd
-import numpy as np
-from error import calcular_erro_absoluto, calcular_erro_relativo, avaliar_performance_modelo, analisar_precisao_flutuante
+from sklearn.model_selection import train_test_split
 
-# 1. Simulação de carregamento de dados (Item 1.1)
+from dados import carregar_dados
+from modelo import treinar_modelo, prever, avaliar_modelo
+from error import (calcular_erro_absoluto, calcular_erro_relativo,
+                   analisar_precisao_flutuante)
 
-dados = {
-    'modulo': ['Habitacao', 'Laboratorio', 'Comando', 'Agricultura'],
-    'latencia_observada': [45.2, 120.5, 12.1, 85.0],
-    'latencia_prevista': [45.0, 115.0, 12.100000000000001, 90.0]
-}
-df = pd.DataFrame(dados)
+# Carregar dados do CSV
+df = carregar_dados()
+print("--- Dados carregados ---")
+print(df)
 
-# 2. Aplicação das funções de erro (Item 1.2)
-df['erro_absoluto'] = calcular_erro_absoluto(df['latencia_observada'], df['latencia_prevista'])
-df['erro_relativo'] = calcular_erro_relativo(df['latencia_observada'], df['latencia_prevista'])
-df['erro_relativo_percentual'] = df['erro_relativo'] * 100
+# Treinar o modelo:Sendo a carga (X) e a latência (y)
+X = df["carga_requisicoes"]
+y = df["latencia_observada"]
+X_treino, X_teste, y_treino, y_teste = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+modelo = treinar_modelo(X_treino, y_treino)
 
-print("--- Tabela de Erros por Módulo ---")
-print(df[['modulo', 'erro_absoluto', 'erro_relativo_percentual']])
+print("\n--- Modelo ---")
+print(f"Coeficiente: {modelo.coef_[0]:.4f} ms por requisição")
+print(f"Intercepto: {modelo.intercept_:.4f} ms")
 
-# 3. Avaliação Global do Modelo (Item 1.3)
-metricas = avaliar_performance_modelo(df['latencia_observada'], df['latencia_prevista'])
-print("\n--- Métricas de Performance do Modelo ---")
-for metrica, valor in metricas.items():
-    print(f"{metrica}: {valor:.4f}")
+metricas = avaliar_modelo(modelo, X_teste, y_teste)
+print("\n--- Métricas (dados de teste) ---")
+for nome, valor in metricas.items():
+    print(f"{nome}: {valor:.4f}")
 
-# 4. Demonstração de ponto flutuante com o módulo Comando
-lat_obs_comando = df.loc[2, 'latencia_observada']
-lat_prev_comando = df.loc[2, 'latencia_prevista']
-analisar_precisao_flutuante(lat_obs_comando, lat_prev_comando)
+# Gerar previsões e calcular os erros
+df["latencia_prevista"] = prever(modelo, X)
+df["erro_absoluto"] = calcular_erro_absoluto(df["latencia_observada"], df["latencia_prevista"])
+df["erro_relativo_percentual"] = calcular_erro_relativo(
+    df["latencia_observada"], df["latencia_prevista"]
+) * 100
+
+print("\n--- Tabela de Erros por Módulo ---")
+print(df[["modulo", "carga_requisicoes", "latencia_observada",
+          "latencia_prevista", "erro_absoluto", "erro_relativo_percentual"]].round(3))
+
+# Ponto flutuante
+analisar_precisao_flutuante(df.loc[0, "latencia_observada"], df.loc[0, "latencia_prevista"])
