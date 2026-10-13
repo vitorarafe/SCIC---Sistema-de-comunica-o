@@ -1,15 +1,18 @@
+import os
 import pandas as pd
+
+CAMINHO_CSV = os.path.join(os.path.dirname(os.path.abspath(__file__)), "scic.csv")
 
 
 def carregar_dados():
-    df = pd.read_csv("scic.csv")
+    df = pd.read_csv(CAMINHO_CSV)
     return df
 
 
-def cadastrar_registro(modulo, latencia_observada, latencia_prevista, status):
+def cadastrar_registro(modulo, carga_requisicoes, latencia_observada, status):
     df = carregar_dados()
-    df.loc[len(df)] = [modulo, latencia_observada, latencia_prevista, status]
-    df.to_csv("scic.csv", index=False)
+    df.loc[len(df)] = [modulo, carga_requisicoes, latencia_observada, status]
+    df.to_csv(CAMINHO_CSV, index=False)
     print("Registro cadastrado!")
 
 
