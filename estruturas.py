@@ -170,4 +170,5 @@ def menu():
             print("Opção inválida. Tente novamente.")
 
 # Inicia o programa. Precisa ficar por último, depois de todas as funções definidas.
-menu()
+if __name__ == "__main__":
+       menu()
