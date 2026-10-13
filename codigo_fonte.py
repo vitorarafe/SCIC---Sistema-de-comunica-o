@@ -6,7 +6,7 @@ from modelo import treinar_modelo, prever, avaliar_modelo
 from error import (calcular_erro_absoluto, calcular_erro_relativo,
                    analisar_precisao_flutuante, classificar_erro)
 from estruturas import (analisar_alertas, alerta_mais_urgente, construir_tries,
-                        buscar_modulo, buscar_sensor)
+                        buscar_modulo, buscar_sensor, remover_acentos)
 from dispositivos import calcular_potencia, mostrar_dispositivos
 
 # Mostra todas as colunas das tabelas no terminal, sem cortar com "...".
@@ -55,6 +55,10 @@ def cadastrar_pelo_menu():
         latencia = float(input("Latência observada (ms): "))
     except ValueError:
         print("Valor numérico inválido. Cadastro cancelado.")
+        return False
+    
+    if modulo == "" or min(carga, tensao, corrente, latencia) <= 0:
+        print("Nome vazio ou valores menores ou iguais a zero. Cadastro cancelado.")
         return False
 
     status = input("Status (ativo/manutencao/alerta): ").strip().lower()
