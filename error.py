@@ -47,3 +47,14 @@ def analisar_precisao_flutuante(valor_real, valor_previsto):
     if diff_exata != round(diff_exata, 3):
         print("Nota: A diferença entre o valor bruto e o arredondado demonstra "
               "a limitação de precisão numérica em cálculos de máquina.")
+
+# Limites (em %) para interpretar o erro relativo no contexto da colônia.
+LIMITE_ATENCAO = 3.0
+LIMITE_PREOCUPANTE = 5.0
+
+def classificar_erro(erro_percentual):
+    if erro_percentual < LIMITE_ATENCAO:
+        return "aceitavel"
+    if erro_percentual < LIMITE_PREOCUPANTE:
+        return "atencao"
+    return "preocupante"
