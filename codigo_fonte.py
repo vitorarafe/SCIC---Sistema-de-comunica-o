@@ -1,9 +1,14 @@
 from sklearn.model_selection import train_test_split
-
+from estruturas import menu
 from dados import carregar_dados
 from modelo import treinar_modelo, prever, avaliar_modelo
 from error import (calcular_erro_absoluto, calcular_erro_relativo,
                    analisar_precisao_flutuante)
+
+import pandas as pd
+pd.set_option("display.max_columns", None)  # mostra todas as colunas
+pd.set_option("display.width", 200)         # não quebra a linha cedo
+
 
 # Carregar dados do CSV
 df = carregar_dados()
@@ -40,3 +45,4 @@ print(df[["modulo", "carga_requisicoes", "latencia_observada",
 
 # Ponto flutuante
 analisar_precisao_flutuante(df.loc[0, "latencia_observada"], df.loc[0, "latencia_prevista"])
+menu(df)
